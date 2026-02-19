@@ -1,0 +1,116 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    // Expected user doc location (create on first login):
+    // companies/{companyId}/users/{uid}
+    function userDoc(companyId) {
+      return get(/databases/$(database)/documents/companies/$(companyId)/users/$(request.auth.uid));
+    }
+
+    function isCompanyUser(companyId) {
+      return signedIn() && userDoc(companyId).exists();
+    }
+
+    function hasBranch(companyId, branchId) {
+      return isCompanyUser(companyId)
+        && (branchId in userDoc(companyId).data.branchIds);
+    }
+
+    function role(companyId) {
+      return isCompanyUser(companyId) ? userDoc(companyId).data.role : null;
+    }
+
+    function isManager(companyId) {
+      return role(companyId) in ['OWNER', 'MANAGER'];
+    }
+
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    match /companies/{companyId} {
+      allow read: if isCompanyUser(companyId);
+
+      // Company-scoped user directory
+      match /users/{uid} {
+        // Users can read their own profile; managers can read/write within company.
+        allow read: if signedIn() && (request.auth.uid == uid || isManager(companyId));
+        allow create: if signedIn() && request.auth.uid == uid;
+        allow update, delete: if isManager(companyId);
+      }
+
+      // Idempotency logs written by client sync (in MVP). In production consider Cloud Functions only.
+      match /syncLogs/{clientTxnId} {
+        allow read: if isCompanyUser(companyId);
+        allow create: if isCompanyUser(companyId);
+        allow update, delete: if false;
+      }
+
+      // Customers live at company scope
+      match /customers/{customerId} {
+        allow read: if isCompanyUser(companyId);
+        allow create, update: if isCompanyUser(companyId);
+        allow delete: if isManager(companyId);
+
+        // Append-only ledger under customer
+        match /ledger/{ledgerId} {
+          allow read: if isCompanyUser(companyId);
+          allow create: if isCompanyUser(companyId);
+          allow update, delete: if false;
+        }
+      }
+
+      // Branch-scoped operational data
+      match /branches/{branchId} {
+        allow read: if hasBranch(companyId, branchId);
+
+        match /sales/{saleId} {
+          allow read: if hasBranch(companyId, branchId);
+          allow create: if hasBranch(companyId, branchId);
+          allow update, delete: if isManager(companyId);
+
+          match /items/{itemId} {
+            allow read: if hasBranch(companyId, branchId);
+            allow create: if hasBranch(companyId, branchId);
+            allow update, delete: if false;
+          }
+        }
+
+        match /inventory/{productId} {
+          allow read: if hasBranch(companyId, branchId);
+          allow create, update: if hasBranch(companyId, branchId);
+          allow delete: if isManager(companyId);
+        }
+
+        match /stockMovements/{movementId} {
+          allow read: if hasBranch(companyId, branchId);
+          allow create: if hasBranch(companyId, branchId);
+          allow update, delete: if false;
+        }
+
+        match /reports/{reportId} {
+          allow read: if hasBranch(companyId, branchId);
+          allow create, update, delete: if isManager(companyId);
+        }
+
+        match /auditLogs/{logId} {
+          allow read: if isManager(companyId);
+          allow create: if hasBranch(companyId, branchId);
+          allow update, delete: if false;
+        }
+      }
+
+      // Products at company scope
+      match /products/{productId} {
+        allow read: if isCompanyUser(companyId);
+        allow create, update, delete: if isManager(companyId);
+      }
+    }
+  }
+}

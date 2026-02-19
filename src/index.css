@@ -1,0 +1,61 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Low-stock sliding ticker */
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+}
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+:root {
+  /* Using an HSL palette for easier manipulation and dark mode later */
+  /* Primary: A rich emerald green for growth/groceries */
+  --color-primary: 150 60% 35%;
+  /* Secondary: A warm amber/orange for accents */
+  --color-secondary: 35 90% 55%;
+  /* Accent: A strong red for alerts/errors */
+  --color-accent: 0 75% 50%;
+
+  --color-background: 0 0% 98%;
+  --color-surface: 0 0% 100%;
+  --color-text: 220 15% 20%;
+}
+
+body {
+  background-color: hsl(var(--color-background));
+  color: hsl(var(--color-text));
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.btn-primary {
+  padding: 0.5rem 1rem;
+  background-color: hsl(var(--color-primary));
+  color: white;
+  border-radius: 0.5rem;
+  transition: all 0.2s;
+}
+
+.btn-primary:hover {
+  filter: brightness(1.1);
+}
+
+.btn-primary:active {
+  transform: scale(0.95);
+}
+
+.card {
+  background-color: hsl(var(--color-surface));
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  border: 1px solid rgb(229 231 235);
+  padding: 1rem;
+}
