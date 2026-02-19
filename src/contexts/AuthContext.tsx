@@ -6,6 +6,7 @@ import { auth } from '../lib/firebase';
 import type { AppUser } from '../types/schema';
 import { AuthContext } from './authContextDef';
 import { provisionCompanyUser } from '../lib/provisionUser';
+import { BRAND_ADMIN_EMAIL } from '../lib/brand';
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
@@ -48,8 +49,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const login = async (email: string, pass: string) => {
         // For Sprint 1, allow a "mock" login if Firebase keys aren't real yet
         // OR actually try firebase. 
-        // Since user likely hasn't put api keys, we'll implement a bypass for "admin@orbit.com"
-        if (email === 'admin@orbit.com' && pass === 'password') {
+        // Since user likely hasn't put api keys, we'll implement a bypass for the brand admin account.
+        if (email === BRAND_ADMIN_EMAIL && pass === 'password') {
             // Mock successful auth state trigger (simulated)
             const mockFirebaseUser = { uid: 'mock-admin', email } as User;
             setUser(mockFirebaseUser);

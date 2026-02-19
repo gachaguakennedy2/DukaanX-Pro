@@ -6,6 +6,7 @@ import { ArrowLeft, DollarSign, TrendingUp, Printer } from 'lucide-react';
 import { format } from 'date-fns';
 import { makeReferenceId } from '../lib/ids';
 import { printPaymentReceipt } from '../lib/receiptPrint';
+import { BRAND_NAME } from '../lib/brand';
 
 type PayChannel = 'CASH' | 'EVC' | 'BANK_TRANSFER';
 
@@ -65,7 +66,7 @@ export default function CustomerDetails() {
 
             // Auto-print payment receipt
             printPaymentReceipt({
-                storeName: 'Orbit Retail',
+                storeName: BRAND_NAME,
                 branchName: 'branch-1',
                 customer: { name: customer.name, phone: customer.phone },
                 entry: newEntry,
@@ -174,7 +175,7 @@ export default function CustomerDetails() {
                                         {entry.type === 'PAYMENT' && customer && (
                                             <button
                                                 onClick={() => printPaymentReceipt({
-                                                    storeName: 'Orbit Retail',
+                                                    storeName: BRAND_NAME,
                                                     branchName: entry.branchId,
                                                     customer: { name: customer.name, phone: customer.phone },
                                                     entry,

@@ -5,6 +5,7 @@ import { ledgerService } from '../lib/ledger';
 import { printReceipt } from '../lib/receiptPrint';
 import type { Sale } from '../types/schema';
 import { format } from 'date-fns';
+import { BRAND_NAME } from '../lib/brand';
 
 function money(n: number) {
     return `$${n.toFixed(2)}`;
@@ -140,7 +141,7 @@ export default function Sales() {
                                                 })() : undefined;
 
                                                 printReceipt({
-                                                    storeName: 'Orbit Retail',
+                                                    storeName: BRAND_NAME,
                                                     branchName: s.branchId,
                                                     receiptNo: `DUP-${s.id.slice(-8)}`,
                                                     saleId: s.id,

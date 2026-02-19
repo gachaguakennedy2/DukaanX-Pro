@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/useAuth';
 import { Lock, Mail, Loader2 } from 'lucide-react';
+import { BRAND_ADMIN_EMAIL, BRAND_LOGO_URL, BRAND_LOGO_WIDTH_PX, BRAND_NAME } from '../lib/brand';
 
 export default function Login() {
     const [email, setEmail] = useState('');
@@ -31,7 +32,13 @@ export default function Login() {
         <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
             <div className="w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden">
                 <div className="bg-[hsl(var(--color-primary))] p-8 text-center">
-                    <h1 className="text-3xl font-bold text-white mb-2">Orbit Retail</h1>
+                    <img
+                        src={BRAND_LOGO_URL}
+                        alt={BRAND_NAME}
+                        width={BRAND_LOGO_WIDTH_PX}
+                        className="h-auto mx-auto mb-4"
+                    />
+                    <h1 className="text-3xl font-bold text-white mb-2">{BRAND_NAME}</h1>
                     <p className="text-emerald-100">Sign in to your dashboard</p>
                 </div>
 
@@ -83,7 +90,7 @@ export default function Login() {
                     </form>
 
                     <div className="mt-6 text-center text-sm text-gray-500">
-                        <p>Default: admin@orbit.com / password</p>
+                        <p>Default: {BRAND_ADMIN_EMAIL} / password</p>
                     </div>
                 </div>
             </div>

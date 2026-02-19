@@ -10,6 +10,7 @@ import { printReceipt, printDraft, type ReceiptPayload } from '../lib/receiptPri
 import { Search, ShoppingCart, Trash2, User as UserIcon, X, Check, AlertCircle } from 'lucide-react';
 import { MOCK_PRODUCTS } from '../lib/mockProducts';
 import { reportingService, type LowStockItem } from '../lib/reports';
+import { BRAND_NAME } from '../lib/brand';
 
 export default function POS() {
     const { items, addToCart, removeFromCart, cartTotal, clearCart } = useCartStore();
@@ -197,7 +198,7 @@ export default function POS() {
         const rn = makeReceiptNo();
         setReceiptNo(rn);
         setLastReceipt({
-            storeName: 'Orbit Retail',
+            storeName: BRAND_NAME,
             branchName: branchId,
             receiptNo: rn,
             saleId: sale.id,
@@ -597,7 +598,7 @@ export default function POS() {
                                             <button
                                                 onClick={() => {
                                                     printDraft({
-                                                        storeName: 'Orbit Retail',
+                                                        storeName: BRAND_NAME,
                                                         branchName: 'branch-1',
                                                         customer: selectedCustomer ? { name: selectedCustomer.name, phone: selectedCustomer.phone } : undefined,
                                                         paymentMethod,

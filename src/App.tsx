@@ -18,6 +18,7 @@ import Suppliers from './pages/Suppliers';
 import Expenses from './pages/Expenses';
 import Accounts from './pages/Accounts';
 import { useSyncWorker } from './lib/syncWorker';
+import { BRAND_LOGO_URL, BRAND_LOGO_WIDTH_PX, BRAND_NAME } from './lib/brand';
 
 // Placeholder components removed
 
@@ -41,7 +42,13 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
       {/* Sidebar */}
       <aside className="w-64 bg-white border-r border-gray-200 hidden md:flex flex-col">
         <div className="p-6">
-          <div className="font-bold text-2xl text-[hsl(var(--color-primary))] tracking-tight">Orbit Retail</div>
+          <img
+            src={BRAND_LOGO_URL}
+            alt={BRAND_NAME}
+            width={BRAND_LOGO_WIDTH_PX}
+            className="h-auto"
+          />
+          <div className="font-bold text-lg text-[hsl(var(--color-primary))] tracking-tight mt-3">{BRAND_NAME}</div>
           <div className="text-xs text-gray-400 mt-1">v1.0.0 (Sprint 1)</div>
         </div>
 
